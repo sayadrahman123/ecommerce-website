@@ -11,6 +11,8 @@ import Footer from "./components/Footer.jsx";
 import ProductDetails from "./pages/ProductDetails.jsx";
 import CategoryPage from "./pages/CategoryPage.jsx";
 import CartPage from "./pages/CartPage.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
 
 function App() {
     return (
@@ -43,6 +45,10 @@ function App() {
                     <Route path="/category/:category" element={<CategoryPage />} />
 
                     <Route path="/cart" element={<CartPage />} />
+
+                    {/* Auth Routes */}
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
                 </Routes>
 
                 <Footer />
