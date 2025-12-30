@@ -2,6 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import TopBanner from './components/TopBanner';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import BrandBar from "./components/BrandBar.jsx";
+import NewArrivals from "./components/NewArrivals.jsx";
+import TopSelling from "./components/TopSelling.jsx";
 
 function App() {
     return (
@@ -14,7 +17,13 @@ function App() {
                     <Route path="/" element={
                         <main>
                             <Hero />
-                            {/* We will add New Arrivals and other sections here later */}
+
+                            <BrandBar />
+
+                            <NewArrivals />
+
+                            <TopSelling />
+
                         </main>
                     } />
                 </Routes>

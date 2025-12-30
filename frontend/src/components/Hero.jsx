@@ -15,7 +15,7 @@ const Hero = () => {
                         Browse through our diverse range of meticulously crafted garments, designed to bring out your individuality and cater to your sense of style.
                     </p>
 
-                    <button className="bg-black text-white px-16 py-4 rounded-full text-lg font-medium hover:bg-gray-800 transition shadow-lg w-full md:w-auto">
+                    <button className="bg-black text-white px-16 py-4 rounded-full text-lg font-medium hover:bg-gray-800 cursor-pointer transition shadow-lg w-full md:w-auto">
                         Shop Now
                     </button>
 
