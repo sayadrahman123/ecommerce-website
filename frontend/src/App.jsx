@@ -10,6 +10,7 @@ import Testimonials from "./components/Testimonials.jsx";
 import Footer from "./components/Footer.jsx";
 import ProductDetails from "./pages/ProductDetails.jsx";
 import CategoryPage from "./pages/CategoryPage.jsx";
+import CartPage from "./pages/CartPage.jsx";
 
 function App() {
     return (
@@ -40,6 +41,8 @@ function App() {
                     <Route path="/product/:id" element={<ProductDetails />} />
 
                     <Route path="/category/:category" element={<CategoryPage />} />
+
+                    <Route path="/cart" element={<CartPage />} />
                 </Routes>
 
                 <Footer />
