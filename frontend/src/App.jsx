@@ -9,6 +9,7 @@ import CategoryGrid from "./components/CategoryGrid.jsx";
 import Testimonials from "./components/Testimonials.jsx";
 import Footer from "./components/Footer.jsx";
 import ProductDetails from "./pages/ProductDetails.jsx";
+import CategoryPage from "./pages/CategoryPage.jsx";
 
 function App() {
     return (
@@ -37,6 +38,8 @@ function App() {
 
                     {/* Product Detail Route (The :id part makes it dynamic) */}
                     <Route path="/product/:id" element={<ProductDetails />} />
+
+                    <Route path="/category/:category" element={<CategoryPage />} />
                 </Routes>
 
                 <Footer />
