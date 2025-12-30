@@ -5,6 +5,9 @@ import Hero from './components/Hero';
 import BrandBar from "./components/BrandBar.jsx";
 import NewArrivals from "./components/NewArrivals.jsx";
 import TopSelling from "./components/TopSelling.jsx";
+import CategoryGrid from "./components/CategoryGrid.jsx";
+import Testimonials from "./components/Testimonials.jsx";
+import Footer from "./components/Footer.jsx";
 
 function App() {
     return (
@@ -24,9 +27,15 @@ function App() {
 
                             <TopSelling />
 
+                            <CategoryGrid />
+
+                            <Testimonials />
+
                         </main>
                     } />
                 </Routes>
+
+                <Footer />
             </div>
         </Router>
     );
