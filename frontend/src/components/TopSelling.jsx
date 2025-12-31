@@ -1,41 +1,22 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import ProductCard from './ProductCard';
+import { fetchProducts} from "../services/api.js";
 
-// Data from "Top Selling" screenshot
-const products = [
-    {
-        id: 5, // Continuing IDs from previous section
-        title: "Vertical Striped Shirt",
-        rating: 5.0,
-        price: 212,
-        originalPrice: 232,
-        discount: 20,
-        image: "https://placehold.co/400x400/png?text=Striped+Shirt",
-    },
-    {
-        id: 6,
-        title: "Courage Graphic T-shirt",
-        rating: 4.0,
-        price: 145,
-        image: "https://placehold.co/400x400/png?text=Graphic+Tee",
-    },
-    {
-        id: 7,
-        title: "Loose Fit Bermuda Shorts",
-        rating: 3.0,
-        price: 80,
-        image: "https://placehold.co/400x400/png?text=Bermuda+Shorts",
-    },
-    {
-        id: 8,
-        title: "Faded Skinny Jeans",
-        rating: 4.5,
-        price: 210,
-        image: "https://placehold.co/400x400/png?text=Skinny+Jeans",
-    }
-];
 
 const TopSelling = () => {
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const loadProducts = async () => {
+            try {
+                const data = await fetchProducts();
+                setProducts(data.slice(0, 4));
+            } catch (error) {
+                console.error("Failed to load top selling products:", error);
+            }
+        }
+        loadProducts();
+    }, [])
     return (
         <section className="py-16 md:py-24 border-b border-gray-200">
             <div className="container mx-auto px-6 md:px-12">
@@ -46,7 +27,14 @@ const TopSelling = () => {
                 {/* Grid Layout */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                     {products.map((product) => (
-                        <ProductCard key={product.id} {...product} />
+                        <ProductCard
+                            key={product.id}
+                            id={product.id}
+                            title={product.name}
+                            rating={product.rating}
+                            price={product.price}
+                            image={product.imageUrl}
+                        />
                     ))}
                 </div>
 
