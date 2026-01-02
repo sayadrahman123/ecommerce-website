@@ -30,14 +30,33 @@ public class RefreshTokenService {
     }
 
 
-    public RefreshToken createRefreshToken(Long userId) {
+//    public RefreshToken createRefreshToken(Long userId) {
+//        RefreshToken refreshToken = new RefreshToken();
+//        refreshToken.setUser(userRepository.findById(userId).get());
+//        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
+//        refreshToken.setToken(UUID.randomUUID().toString());
+//
+//        return refreshTokenRepository.save(refreshToken);
+//    }
+
+    @Transactional
+    public RefreshToken createRefreshToken(User user) {
+
+        refreshTokenRepository.deleteByUser(user);
+        refreshTokenRepository.flush();
+
+
         RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setUser(userRepository.findById(userId).get());
-        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
+        refreshToken.setUser(user);
         refreshToken.setToken(UUID.randomUUID().toString());
+        refreshToken.setExpiryDate(
+                Instant.now().plusMillis(refreshTokenDurationMs)
+        );
 
         return refreshTokenRepository.save(refreshToken);
     }
+
+
 
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().isBefore(Instant.now())) {
@@ -47,10 +66,7 @@ public class RefreshTokenService {
         return token;
     }
 
-    @Transactional
-    public int deleteByUserId(Long userId) {
-        return refreshTokenRepository.deleteByUserId(userId);
-    }
+
 
 
 }

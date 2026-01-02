@@ -56,7 +56,7 @@ public class AuthController {
         // 3. Generate Refresh Token
         // Need to fetch the User entity ID
         User user = userService.findByEmail(userDetails.getUsername());
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
         // 4. Return Response
         return ResponseEntity.ok(new JwtResponse(
@@ -65,7 +65,7 @@ public class AuthController {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                List.of(user.getRole()) // Single role in list for now
+                List.of("USER") // Single role in list for now
         ));
     }
 
