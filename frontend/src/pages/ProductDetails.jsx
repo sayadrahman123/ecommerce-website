@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Star, Minus, Plus, Check } from 'lucide-react'; // Added 'Check' icon
 import { useParams } from 'react-router-dom';
-import { fetchProductById } from '../services/api';
+import { fetchProductById, addToCart } from '../services/api';
 import ReviewsSection from '../components/ReviewsSection';
 import ProductRecommendations from '../components/ProductRecommendations';
+import { useNavigate } from 'react-router-dom'; // Add this
+
 
 const ProductDetails = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     // State for interactive elements
     const [selectedImage, setSelectedImage] = useState(0);
@@ -36,6 +39,27 @@ const ProductDetails = () => {
         };
         loadProduct();
     }, [id]);
+
+    // NEW: Handle Add to Cart
+    const handleAddToCart = async () => {
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        // 1. Check if user is logged in
+        if (!user) {
+            alert("Please login to add items to your cart.");
+            navigate('/login');
+            return;
+        }
+
+        // 2. Send request to Backend
+        try {
+            await addToCart(product.id, quantity);
+            alert("Item added to cart successfully!");
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            alert("Failed to add item. Please try again.");
+        }
+    };
 
     if (loading) return <div className="text-center py-20">Loading...</div>;
     if (!product) return <div className="text-center py-20">Product not found.</div>;
@@ -152,7 +176,9 @@ const ProductDetails = () => {
                             <button onClick={() => setQuantity(quantity + 1)}><Plus size={20} /></button>
                         </div>
 
-                        <button className="flex-1 bg-black text-white rounded-full font-medium hover:bg-gray-800 transition">
+                        <button
+                            onClick={handleAddToCart}
+                            className="flex-1 bg-black text-white rounded-full font-medium hover:bg-gray-800 transition">
                             Add to Cart
                         </button>
                     </div>
