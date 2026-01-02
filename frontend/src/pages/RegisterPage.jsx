@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, {use, useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import { Mail, Lock, User } from 'lucide-react';
+import {registerUser} from "../services/api.js";
 
 const RegisterPage = () => {
+    const [error, setError] = useState("")
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -14,10 +17,27 @@ const RegisterPage = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Register attempt:", formData);
-        // Backend logic will go here
+        setError("")
+
+        if (formData.password !== formData.confirmPassword) {
+            setError("Passwords do not match!")
+            return;
+        }
+        try {
+            await registerUser({
+                name: formData.name,
+                email: formData.email,
+                password: formData.password
+            });
+            alert("Registration successful! Please login to continue.")
+            navigate("/login")
+        } catch (error) {
+            setError(error.response?.data || "Registration failed! Try again later.")
+        }
+
+
     };
 
     return (

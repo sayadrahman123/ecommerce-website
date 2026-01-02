@@ -1,15 +1,35 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock } from 'lucide-react';
+import { loginUser } from '../services/api'; // Import API
 
 const LoginPage = () => {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Login attempt:", { email, password });
-        // We will hook this up to the backend later
+        setError('');
+
+        try {
+            const user = await loginUser({ email, password });
+
+            // 1. Save user info to localStorage
+            localStorage.setItem('user', JSON.stringify(user));
+
+            // 2. Trigger an event so the Navbar can update immediately (we will fix Navbar next)
+            window.dispatchEvent(new Event("storage"));
+
+            alert(`Welcome back, ${user.name}!`);
+
+            // 3. Redirect to Homepage
+            navigate('/');
+
+        } catch (err) {
+            setError("Invalid email or password");
+        }
     };
 
     return (
@@ -17,6 +37,8 @@ const LoginPage = () => {
             <div className="w-full max-w-md bg-white border border-gray-200 rounded-[20px] p-8 md:p-10 shadow-sm">
 
                 <h1 className="text-3xl font-display font-bold uppercase text-center mb-8">Login</h1>
+
+                {error && <div className="bg-red-100 text-red-600 p-3 rounded-lg mb-4 text-sm text-center">{error}</div>}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
 

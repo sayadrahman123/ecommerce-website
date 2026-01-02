@@ -1,13 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingCart, CircleUserRound, Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+
+    // Check login status on load
+    useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        if (storedUser) {
+            setUser(storedUser);
+        }
+
+        // Listen for login/logout events (so the navbar updates instantly)
+        const handleStorageChange = () => {
+            const updatedUser = JSON.parse(localStorage.getItem('user'));
+            setUser(updatedUser);
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        setUser(null);
+        navigate('/login');
+    };
 
     return (
         <nav className="border-b border-shop-border bg-white sticky top-0 z-50">
-            {/* Increased padding from px-4 to px-6 (mobile) and px-12 (desktop) */}
             <div className="container mx-auto px-6 md:px-12 py-4 flex items-center justify-between gap-8">
 
                 {/* Mobile Menu Button + Logo */}
@@ -31,7 +55,7 @@ const Navbar = () => {
                     <Link to="/brands" className="hover:text-gray-600">Brands</Link>
                 </div>
 
-                {/* Search Bar - Changed background to bg-gray-200 for better visibility */}
+                {/* Search Bar */}
                 <div className="hidden md:flex flex-1 max-w-xl bg-gray-200 rounded-full px-4 py-3 items-center gap-2">
                     <Search className="text-gray-500" size={20} />
                     <input
@@ -41,15 +65,40 @@ const Navbar = () => {
                     />
                 </div>
 
-                {/* Icons */}
+                {/* Icons Area - NOW UPDATED */}
                 <div className="flex items-center gap-4">
                     <Search className="md:hidden" size={24} />
                     <Link to="/cart">
                         <ShoppingCart size={24} className="hover:text-gray-600 cursor-pointer" />
                     </Link>
-                    <Link to="/profile">
-                        <CircleUserRound size={24} className="hover:text-gray-600 cursor-pointer" />
-                    </Link>
+
+                    {/* DYNAMIC USER SECTION */}
+                    {user ? (
+                        <div className="flex items-center gap-3 group relative cursor-pointer">
+                            {/* Show Name (Hidden on very small screens) */}
+                            <span className="text-sm font-medium hidden md:block">Hi, {user.name}</span>
+
+                            {/* User Avatar (First letter of name) */}
+                            <div className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center font-bold uppercase">
+                                {user.username ? user.username.charAt(0) : 'U'}
+                            </div>
+
+                            {/* Dropdown Menu (Appears on Hover) */}
+                            <div className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg rounded-xl border border-gray-100 hidden group-hover:block z-50 p-2">
+                                <button
+                                    onClick={handleLogout}
+                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition"
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        // Not Logged In? Show Default Icon
+                        <Link to="/login">
+                            <CircleUserRound size={24} className="hover:text-gray-600 cursor-pointer" />
+                        </Link>
+                    )}
                 </div>
             </div>
 

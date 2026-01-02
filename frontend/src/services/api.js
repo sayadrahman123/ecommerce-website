@@ -1,29 +1,56 @@
 import axios from 'axios';
 
-// Create a configured axios instance
+const API_URL = 'http://localhost:8080/api';
+
 const api = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json',
     }
 });
 
-export const fetchProducts = async () => {
-    try {
-        const response = await api.get('/products');
-        return response.data;
-    } catch (error) {
-        throw error;
+// --- REQUEST INTERCEPTOR ---
+// Before sending any request, check if we have a token and attach it
+api.interceptors.request.use(
+    (config) => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user && user.token) {
+            config.headers.Authorization = `Bearer ${user.token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
     }
+);
+
+// --- API CALLS ---
+export const fetchProducts = async () => {
+    const response = await api.get('/products');
+    return response.data;
 };
 
 export const fetchProductById = async (id) => {
-    try {
-        const response = await api.get(`/products/${id}`);
-        return response.data;
-    } catch (error) {
-        throw error;
+    const response = await api.get(`/products/${id}`);
+    return response.data;
+};
+
+export const registerUser = async (userData) => {
+    const response = await api.post('/auth/register', userData);
+    return response.data;
+};
+
+export const loginUser = async (credentials) => {
+    const response = await api.post('/auth/login', credentials);
+    if (response.data.token) {
+        localStorage.setItem('user', JSON.stringify(response.data));
     }
+    return response.data;
+};
+
+export const logout = () => {
+    localStorage.removeItem('user');
+    window.location.href = "/login";
 };
 
 export default api;
