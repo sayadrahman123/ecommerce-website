@@ -4,6 +4,7 @@ package com.rahmani.backend.controller;
 import com.rahmani.backend.dto.AddToCartRequest;
 import com.rahmani.backend.model.Cart;
 import com.rahmani.backend.model.User;
+import com.rahmani.backend.payload.CartDto;
 import com.rahmani.backend.repository.UserRepository;
 import com.rahmani.backend.service.CartService;
 import lombok.RequiredArgsConstructor;
@@ -29,17 +30,17 @@ public class CartController {
     }
 
     @GetMapping
-    public ResponseEntity<Cart> getCart() {
+    public ResponseEntity<CartDto> getCart() {
         return ResponseEntity.ok(cartService.getCartByUser(getCurrentUserId()));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Cart> addToCart(@RequestBody AddToCartRequest request) {
+    public ResponseEntity<CartDto> addToCart(@RequestBody AddToCartRequest request) {
         return ResponseEntity.ok(cartService.addToCart(getCurrentUserId(), request.getProductId(), request.getQuantity()));
     }
 
     @DeleteMapping("/remove/{itemId}")
-    public ResponseEntity<Cart> removeFromCart(@PathVariable Long itemId) {
+    public ResponseEntity<CartDto> removeFromCart(@PathVariable Long itemId) {
         return ResponseEntity.ok(cartService.removeFromCart(getCurrentUserId(), itemId));
     }
 }
