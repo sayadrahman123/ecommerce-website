@@ -60,7 +60,7 @@ export const getCart = async () => {
 }
 
 export const addToCart = async (productId, quantity) => {
-    const response = await  api.post('/cart', {productId, quantity});
+    const response = await  api.post('/cart/add', {productId, quantity});
     return response.data;
 }
 
