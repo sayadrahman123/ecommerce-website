@@ -1,4 +1,4 @@
-package com.rahmani.backend.dto;
+package com.rahmani.backend.payload;
 
 import lombok.Data;
 

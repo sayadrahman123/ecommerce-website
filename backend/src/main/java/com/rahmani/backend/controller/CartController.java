@@ -1,14 +1,12 @@
 package com.rahmani.backend.controller;
 
 
-import com.rahmani.backend.dto.AddToCartRequest;
-import com.rahmani.backend.model.Cart;
+import com.rahmani.backend.payload.AddToCartRequest;
 import com.rahmani.backend.model.User;
 import com.rahmani.backend.payload.CartDto;
 import com.rahmani.backend.repository.UserRepository;
 import com.rahmani.backend.service.CartService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
