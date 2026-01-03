@@ -69,14 +69,41 @@ export const removeFromCart = async (itemId) => {
     return response.data;
 }
 
-export const placeOrder = async () => {
-    const response = await api.post('/orders/checkout');
+export const placeOrder = async (transactionId) => {
+    // Send it in the body
+    const response = await api.post('/orders/checkout', { transactionId });
     return response.data;
 };
 
 export const getOrders = async () => {
     const response = await api.get('/orders');
     return response.data;
+};
+
+export const addProduct = async (productData) => {
+    const response = await api.post('/admin/products/add', productData);
+    return response.data;
+};
+
+export const deleteProduct = async (id) => {
+    const response = await api.delete(`/admin/products/delete/${id}`);
+    return response.data;
+};
+
+export const addProductWithImage = async (formData) => {
+    // Note: When sending FormData, we don't set 'Content-Type': 'application/json'
+    // Axios sets 'multipart/form-data' automatically
+    const response = await api.post('/admin/products/add-with-image', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return response.data;
+};
+
+export const createPaymentIntent = async () => {
+    const response = await api.post('/payment/create-payment-intent');
+    return response.data; // Returns { clientSecret: "..." }
 };
 
 export default api;
