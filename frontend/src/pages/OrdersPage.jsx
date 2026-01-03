@@ -36,7 +36,7 @@ const OrdersPage = () => {
                             {/* Order Header */}
                             <div className="flex flex-col md:flex-row justify-between mb-4 border-b border-gray-100 pb-4">
                                 <div>
-                                    <p className="text-sm text-gray-500">Order ID: #{order.id}</p>
+                                    <p className="text-sm text-gray-500">Order ID: {order.trackingId}</p>
                                     <p className="text-sm text-gray-500">Date: {new Date(order.orderDate).toLocaleDateString()}</p>
                                 </div>
                                 <div className="mt-2 md:mt-0 text-right">

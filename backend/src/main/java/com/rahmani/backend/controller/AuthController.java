@@ -65,7 +65,7 @@ public class AuthController {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                List.of("USER") // Single role in list for now
+                List.of(user.getRole()) // Single role in list for now
         ));
     }
 

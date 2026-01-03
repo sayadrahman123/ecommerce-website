@@ -14,6 +14,9 @@ import CartPage from "./pages/CartPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import OrdersPage from './pages/OrdersPage';
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import AddProductPage from "./pages/admin/AddProductPage.jsx";
+import PaymentPage from "./pages/PaymentPage.jsx";
 
 function App() {
     return (
@@ -53,6 +56,10 @@ function App() {
 
                     <Route path="/orders" element={<OrdersPage />} />
 
+                    <Route path="/admin" element={<AdminDashboard />} />
+                    <Route path="/admin/add-product" element={<AddProductPage />} />
+
+                    <Route path="/checkout" element={<PaymentPage />} />
                 </Routes>
 
                 <Footer />
