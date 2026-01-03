@@ -13,6 +13,7 @@ import CategoryPage from "./pages/CategoryPage.jsx";
 import CartPage from "./pages/CartPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
+import OrdersPage from './pages/OrdersPage';
 
 function App() {
     return (
@@ -49,6 +50,9 @@ function App() {
                     {/* Auth Routes */}
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
+
+                    <Route path="/orders" element={<OrdersPage />} />
+
                 </Routes>
 
                 <Footer />

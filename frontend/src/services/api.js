@@ -69,4 +69,14 @@ export const removeFromCart = async (itemId) => {
     return response.data;
 }
 
+export const placeOrder = async () => {
+    const response = await api.post('/orders/checkout');
+    return response.data;
+};
+
+export const getOrders = async () => {
+    const response = await api.get('/orders');
+    return response.data;
+};
+
 export default api;

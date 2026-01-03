@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Tag, ArrowRight, Trash2, Plus, Minus } from 'lucide-react'; // Added Icons
 import { Link } from 'react-router-dom';
-import { getCart, removeFromCart } from "../services/api.js";
+import { getCart, removeFromCart, placeOrder } from "../services/api.js";
+import { useNavigate } from 'react-router-dom';
+
 
 const CartPage = () => {
     const [cart, setCart] = useState(null); // Changed from [] to null to handle object structure
     const [isLoading, setIsLoading] = useState(true);
+
+    const navigate = useNavigate();
 
     // 1. Fetch Cart from Backend
     useEffect(() => {
@@ -41,6 +45,17 @@ const CartPage = () => {
         } catch (error) {
             console.error("Error removing item:", error);
             alert("Failed to remove item.");
+        }
+    };
+
+    const handleCheckout = async () => {
+        try {
+            await placeOrder();
+            alert("Order Placed Successfully!");
+            navigate('/orders'); // Redirect to Order History
+        } catch (error) {
+            console.error("Checkout failed:", error);
+            alert("Failed to place order. Please try again.");
         }
     };
 
@@ -172,7 +187,9 @@ const CartPage = () => {
                             </button>
                         </div>
 
-                        <button className="w-full bg-black text-white py-4 rounded-full font-medium flex items-center justify-center gap-2 hover:bg-gray-800 transition shadow-lg cursor-pointer">
+                        <button
+                            onClick={handleCheckout}
+                            className="w-full bg-black text-white py-4 rounded-full font-medium flex items-center justify-center gap-2 hover:bg-gray-800 transition shadow-lg cursor-pointer">
                             Go to Checkout <ArrowRight size={20} />
                         </button>
                     </div>
