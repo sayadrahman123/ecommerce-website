@@ -50,9 +50,9 @@ const CartPage = () => {
 
     const handleCheckout = async () => {
         try {
-            await placeOrder();
-            alert("Order Placed Successfully!");
-            navigate('/orders'); // Redirect to Order History
+            // await placeOrder();
+            // alert("Order Placed Successfully!");
+            navigate('/checkout'); // Redirect to Order History
         } catch (error) {
             console.error("Checkout failed:", error);
             alert("Failed to place order. Please try again.");
