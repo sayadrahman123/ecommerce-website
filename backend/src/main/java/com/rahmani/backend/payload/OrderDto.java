@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 public class OrderDto {
     private Long id;
+    private String trackingId;
     private LocalDateTime orderDate;
     private BigDecimal totalAmount;
     private String status;
