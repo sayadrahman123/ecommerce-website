@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
@@ -34,7 +36,7 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<OrderDto> getMyOrders() {
-        return ResponseEntity.ok(orderService.placeOrder(getCurrentUserId()));
+    public ResponseEntity<List<OrderDto>> getMyOrders() {
+        return ResponseEntity.ok(orderService.getUserOrders(getCurrentUserId()));
     }
 }
