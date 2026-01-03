@@ -17,6 +17,7 @@ import OrdersPage from './pages/OrdersPage';
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AddProductPage from "./pages/admin/AddProductPage.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
+import Home from "./pages/Home.jsx";
 
 function App() {
     return (
@@ -26,22 +27,7 @@ function App() {
                 <Navbar />
 
                 <Routes>
-                    <Route path="/" element={
-                        <main>
-                            <Hero />
-
-                            <BrandBar />
-
-                            <NewArrivals />
-
-                            <TopSelling />
-
-                            <CategoryGrid />
-
-                            <Testimonials />
-
-                        </main>
-                    } />
+                    <Route path="/" element={<Home />} />
 
                     {/* Product Detail Route (The :id part makes it dynamic) */}
                     <Route path="/product/:id" element={<ProductDetails />} />

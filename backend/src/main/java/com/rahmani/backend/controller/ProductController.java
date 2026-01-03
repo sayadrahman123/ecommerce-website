@@ -1,6 +1,7 @@
 package com.rahmani.backend.controller;
 
 import com.rahmani.backend.model.Product;
+import com.rahmani.backend.repository.ProductRepository;
 import com.rahmani.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductRepository productRepository;
 
     @GetMapping
     public List<Product> getAllProducts() {
@@ -32,4 +34,13 @@ public class ProductController {
     public List<Product> getProductsByCategory(@PathVariable String category) {
         return productService.getProductsByCategory(category);
     }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam String query) {
+        // We pass the query twice because we want to check both Name AND Description
+        return ResponseEntity.ok(productRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query, query));
+    }
+
+
 }

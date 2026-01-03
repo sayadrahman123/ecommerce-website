@@ -106,4 +106,9 @@ export const createPaymentIntent = async () => {
     return response.data; // Returns { clientSecret: "..." }
 };
 
+export const searchProducts = async (query) => {
+    const response = await api.get(`/products/search?query=${query}`);
+    return response.data;
+};
+
 export default api;

@@ -7,6 +7,16 @@ const Navbar = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
 
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (searchTerm.trim()) {
+            navigate(`/?search=${searchTerm}`); // We'll reuse the Home page to show results
+            setSearchTerm(""); // Clear input
+        }
+    };
+
     // Check login status on load
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -55,15 +65,18 @@ const Navbar = () => {
                     <Link to="/brands" className="hover:text-gray-600">Brands</Link>
                 </div>
 
+
                 {/* Search Bar */}
-                <div className="hidden md:flex flex-1 max-w-xl bg-gray-200 rounded-full px-4 py-3 items-center gap-2">
-                    <Search className="text-gray-500" size={20} />
+                <form onSubmit={handleSearch} className="hidden md:flex items-center bg-gray-100 rounded-full px-4 py-2 w-[300px]">
+                    <Search size={20} className="text-gray-400" />
                     <input
                         type="text"
-                        placeholder="Search for products..."
-                        className="bg-transparent border-none outline-none w-full text-sm placeholder-gray-500 text-black"
+                        placeholder="Search for hoodies, t-shirts..."
+                        className="bg-transparent border-none outline-none ml-2 w-full text-sm"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                </div>
+                </form>
 
                 {/* Icons Area - NOW UPDATED */}
                 <div className="flex items-center gap-4">
