@@ -111,4 +111,14 @@ export const searchProducts = async (query) => {
     return response.data;
 };
 
+export const getReviews = async (productId) => {
+    const response = await  api.get(`/reviews/${productId}`)
+    return response.data;
+}
+
+export const addReview = async (productId, rating, comment) => {
+    const response = await api.post('/reviews/add', {productId, rating, comment});
+    return response.data;
+}
+
 export default api;

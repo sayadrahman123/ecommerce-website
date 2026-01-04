@@ -1,56 +1,55 @@
-import React, { useState } from 'react';
-import { Star, CheckCircle2, MoreHorizontal, SlidersHorizontal, ChevronDown } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Star, CheckCircle2, MoreHorizontal, SlidersHorizontal, ChevronDown, User } from 'lucide-react';
+import { getReviews, addReview } from '../services/api';
 
-const reviews = [
-    {
-        id: 1,
-        name: "Samantha D.",
-        rating: 4.5,
-        date: "August 14, 2023",
-        text: "I absolutely love this t-shirt! The design is unique and the fabric feels so comfortable. As a fellow designer, I appreciate the attention to detail. It's become my favorite go-to shirt."
-    },
-    {
-        id: 2,
-        name: "Alex M.",
-        rating: 5,
-        date: "August 15, 2023",
-        text: "The t-shirt exceeded my expectations! The colors are vibrant and the print quality is top-notch. Being a UI/UX designer myself, I'm quite picky about aesthetics, and this t-shirt definitely gets a thumbs up from me."
-    },
-    {
-        id: 3,
-        name: "Ethan R.",
-        rating: 3.5,
-        date: "August 16, 2023",
-        text: "This t-shirt is a must-have for anyone who appreciates good design. The minimalistic yet stylish pattern caught my eye, and the fit is perfect. I can see the designer's touch in every aspect of this shirt."
-    },
-    {
-        id: 4,
-        name: "Olivia P.",
-        rating: 5,
-        date: "August 17, 2023",
-        text: "As a UI/UX enthusiast, I value simplicity and functionality. This t-shirt not only represents those principles but also feels great to wear. It's evident that the designer poured their creativity into making this t-shirt stand out."
-    },
-    {
-        id: 5,
-        name: "Liam K.",
-        rating: 5,
-        date: "August 18, 2023",
-        text: "This t-shirt is a fusion of comfort and creativity. The fabric is soft, and the design speaks volumes about the designer's skill. It's like wearing a piece of art that reflects my passion for both design and fashion."
-    },
-    {
-        id: 6,
-        name: "Ava H.",
-        rating: 4.5,
-        date: "August 19, 2023",
-        text: "I'm not just wearing a t-shirt; I'm wearing a piece of design philosophy. The intricate details and thoughtful layout of the design make this shirt a conversation starter."
-    }
-];
-
-const ReviewsSection = () => {
+const ReviewsSection = ({ productId }) => {
     const [activeTab, setActiveTab] = useState('reviews');
+    const [reviews, setReviews] = useState([]);
+    const [showForm, setShowForm] = useState(false);
+
+    // Form State
+    const [rating, setRating] = useState(5);
+    const [comment, setComment] = useState("");
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem('user')));
+        loadReviews();
+    }, [productId]);
+
+    const loadReviews = async () => {
+        try {
+            const data = await getReviews(productId);
+            setReviews(data);
+        } catch (error) {
+            console.error("Failed to load reviews", error);
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!user) {
+            alert("Please login to write a review");
+            return;
+        }
+        try {
+            await addReview(productId, rating, comment);
+            setComment("");
+            setShowForm(false);
+            await loadReviews();
+            alert("Review submitted successfully!"); // Success message
+        } catch (error) {
+            // NEW: Handle the specific error message from backend
+            if (error.response && error.response.status === 403) {
+                alert("You can only review products you have purchased.");
+            } else {
+                alert("Failed to submit review");
+            }
+        }
+    };
 
     return (
-        <section className="mb-20">
+        <section className="mb-20 mt-12">
             {/* Tabs */}
             <div className="flex items-center justify-between border-b border-gray-200 mb-8">
                 {['Product Details', 'Rating & Reviews', 'FAQs'].map((tab) => {
@@ -75,67 +74,117 @@ const ReviewsSection = () => {
             {/* Header (Filter & Sort) */}
             <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                 <h3 className="text-2xl font-bold flex items-center gap-2">
-                    All Reviews <span className="text-base text-gray-500 font-normal">(451)</span>
+                    All Reviews <span className="text-base text-gray-500 font-normal">({reviews.length})</span>
                 </h3>
 
                 <div className="flex gap-3">
                     <button className="bg-[#F0F0F0] p-3 rounded-full hover:bg-gray-200">
                         <SlidersHorizontal size={20} />
                     </button>
-                    <button className="bg-[#F0F0F0] px-5 py-3 rounded-full flex items-center gap-2 hover:bg-gray-200 font-medium hidden md:flex">
+                    <button className="bg-[#F0F0F0] px-5 py-3 rounded-full hidden md:flex items-center gap-2 hover:bg-gray-200 font-medium">
                         Latest <ChevronDown size={16} />
                     </button>
-                    <button className="bg-black text-white px-8 py-3 rounded-full font-medium hover:bg-gray-800">
-                        Write a Review
+                    <button
+                        onClick={() => setShowForm(!showForm)}
+                        className="bg-black text-white px-8 py-3 rounded-full font-medium hover:bg-gray-800"
+                    >
+                        {showForm ? "Cancel" : "Write a Review"}
                     </button>
                 </div>
             </div>
 
-            {/* Reviews Grid */}
-            <div className="grid md:grid-cols-2 gap-6">
-                {reviews.map((review) => (
-                    <div key={review.id} className="border border-gray-200 rounded-[20px] p-8 space-y-4">
-                        <div className="flex justify-between items-start">
-                            {/* Stars */}
-                            <div className="flex text-yellow-400 gap-1">
-                                {[...Array(5)].map((_, i) => (
-                                    <Star
-                                        key={i}
-                                        size={20}
-                                        fill={i < Math.floor(review.rating) ? "currentColor" : "none"}
-                                        strokeWidth={0}
-                                    />
+            {/* --- WRITE REVIEW FORM (Toggleable) --- */}
+            {showForm && (
+                <div className="bg-gray-50 p-6 rounded-[20px] mb-8 border border-gray-200 animate-fade-in">
+                    <h4 className="font-bold text-lg mb-4">Write your review</h4>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium mb-2 text-gray-600">Select Rating</label>
+                            <div className="flex gap-2">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <button
+                                        key={star}
+                                        type="button"
+                                        onClick={() => setRating(star)}
+                                        className="transition hover:scale-110"
+                                    >
+                                        <Star
+                                            size={28}
+                                            fill={star <= rating ? "#FFC633" : "none"}
+                                            className={star <= rating ? "text-[#FFC633]" : "text-gray-300"}
+                                        />
+                                    </button>
                                 ))}
                             </div>
-                            <button className="text-gray-400 hover:text-black">
-                                <MoreHorizontal />
-                            </button>
                         </div>
+                        <textarea
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            required
+                            placeholder="Share your thoughts about the product..."
+                            className="w-full p-4 rounded-xl border border-gray-200 focus:outline-none focus:border-black min-h-[100px]"
+                        />
+                        <button className="bg-black text-white px-8 py-3 rounded-full font-bold text-sm hover:bg-gray-800">
+                            Submit Review
+                        </button>
+                    </form>
+                </div>
+            )}
 
-                        {/* Name */}
-                        <h4 className="font-bold text-lg flex items-center gap-2">
-                            {review.name} <CheckCircle2 size={18} className="text-green-500 fill-green-500 text-white" />
-                        </h4>
+            {/* Reviews Grid */}
+            <div className="grid md:grid-cols-2 gap-6">
+                {reviews.length > 0 ? (
+                    reviews.map((review) => (
+                        <div key={review.id} className="border border-gray-200 rounded-[20px] p-8 space-y-4 bg-white">
+                            <div className="flex justify-between items-start">
+                                {/* Stars */}
+                                <div className="flex gap-1">
+                                    {[...Array(5)].map((_, i) => (
+                                        <Star
+                                            key={i}
+                                            size={20}
+                                            fill={i < review.rating ? "#FFC633" : "none"}
+                                            className={i < review.rating ? "text-[#FFC633]" : "text-gray-300"}
+                                        />
+                                    ))}
+                                </div>
+                                <button className="text-gray-400 hover:text-black">
+                                    <MoreHorizontal />
+                                </button>
+                            </div>
 
-                        {/* Text */}
-                        <p className="text-gray-600 leading-relaxed text-sm md:text-base">
-                            "{review.text}"
-                        </p>
+                            {/* Name */}
+                            <h4 className="font-bold text-lg flex items-center gap-2">
+                                {review.user?.name || "Anonymous"}
+                                <CheckCircle2 size={18} className="text-[#01AB31] fill-[#01AB31] text-white" />
+                            </h4>
 
-                        {/* Date */}
-                        <p className="text-gray-500 font-medium text-sm pt-2">
-                            Posted on {review.date}
-                        </p>
+                            {/* Text */}
+                            <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                                "{review.comment}"
+                            </p>
+
+                            {/* Date */}
+                            <p className="text-gray-500 font-medium text-sm pt-2">
+                                Posted on {new Date(review.createdAt).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}
+                            </p>
+                        </div>
+                    ))
+                ) : (
+                    <div className="col-span-2 text-center py-10 text-gray-500">
+                        No reviews yet. Be the first to write one!
                     </div>
-                ))}
+                )}
             </div>
 
             {/* Load More Button */}
-            <div className="flex justify-center mt-10">
-                <button className="border border-gray-300 px-12 py-3 rounded-full hover:bg-black hover:text-white transition font-medium">
-                    Load More Reviews
-                </button>
-            </div>
+            {reviews.length > 6 && (
+                <div className="flex justify-center mt-10">
+                    <button className="border border-gray-300 px-12 py-3 rounded-full hover:bg-black hover:text-white transition font-medium">
+                        Load More Reviews
+                    </button>
+                </div>
+            )}
         </section>
     );
 };

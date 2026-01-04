@@ -1,5 +1,6 @@
 package com.rahmani.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,4 +43,9 @@ public class Product {
     @CollectionTable(name = "product_size", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "size")
     private List<String> sizes;
+
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("product")
+    private java.util.List<Review> reviews = new java.util.ArrayList<>();
 }
