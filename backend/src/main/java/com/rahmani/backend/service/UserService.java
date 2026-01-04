@@ -21,6 +21,8 @@ public class UserService {
             throw new RuntimeException("Email already in use");
         }
 
+        user.setRole("USER");
+
         // HASH THE PASSWORD BEFORE SAVING
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
